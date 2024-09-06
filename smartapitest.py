@@ -119,9 +119,12 @@ def main():
 
     # Run the test cases
     test_results = []
+    i = 0
     for test_case, operation in zip(all_test_cases, operations):
+        print("run test case " + i)
         result = run_test_case(base_url, test_case, operation)
         test_results.append(result)
+        i = i+1
         if not result['passed']:
             print(f"Test failed: {result['test_name']}")
             print(f"Expected status: {result.get('expected_status')}")
