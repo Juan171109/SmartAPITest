@@ -1,5 +1,4 @@
 pyyaml
-prance
 openapi-spec-validator
 rstr
 prance~=23.6.21.0
