@@ -45,6 +45,7 @@ def blackbox(swagger, port):
             options = " http://localhost:" + str(port)
             subprocess.run(run + options, shell=True)
         elif tool == "smartapitest":
+            print("start services for smartapitest.")
             if service == "languagetool":
                 run = "python smartapitest.py " + swagger
                 options = " http://localhost:" + str(port)
@@ -64,6 +65,7 @@ if __name__ == "__main__":
     if tool == "evomaster-whitebox":
         subprocess.run("python3 run_service.py " + service + " " + str(port) + " whitebox", shell=True)
     else:
+        print("start service for " + tool)
         subprocess.run("python3 run_service.py " + service + " " + str(port) + " blackbox", shell=True)
 
     print("Service started in the background. To check or kill the session, please see README file.")

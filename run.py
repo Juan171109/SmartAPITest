@@ -15,11 +15,14 @@ if __name__ == "__main__":
         print("Running " + tool + " for " + services[i] + ": " + str(cov_port))
         session = tool + '_' + services[i]
         cov_session = services[i] + "_cov"
+        print("start coverage process for " + session)
         subprocess.run("tmux new -d -s " + cov_session + " sh get_cov.sh " + str(cov_port), shell=True)
+        print("start run_tool for " + services[i])
         subprocess.run("tmux new -d -s " + session + " 'timeout " + time_limit + "h python3 run_tool.py " + tool + ' ' + services[i] + ' ' + str(cov_port) + "'", shell=True)
 
-    time.sleep(300)
-    time.sleep(int(time_limit) * 60 * 60)
+    print("service all started.")
+    time.sleep(600)
+    # time.sleep(int(time_limit) * 60 * 60)
 
     print("Stop running services...")
     subprocess.run("sudo docker stop `sudo docker ps -a -q`", shell=True)
