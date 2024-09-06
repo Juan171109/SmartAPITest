@@ -44,6 +44,14 @@ def blackbox(swagger, port):
             run = "python no_sampling.py " + swagger
             options = " http://localhost:" + str(port)
             subprocess.run(run + options, shell=True)
+        elif tool == "smartapitest":
+            if service == "languagetool":
+                run = "python smartapitest.py " + swagger
+                options = " http://localhost:" + str(port)
+                subprocess.run(run + options, shell=True)
+                print("Only run test for languagetool currently.")
+            else:
+                print("Will skip test if service is not languagetool.")
 
 if __name__ == "__main__":
     tool = sys.argv[1]
