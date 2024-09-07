@@ -32,29 +32,54 @@ def analyze_spec(spec):
 
 def generate_test_case(operation):
     operation_string = json.dumps(operation)
-
     prompt_text = f"""
-    Here is the API operation data: {operation_string}
-    Please generate API test cases for this operation in JSON format.
-    No extra description before or after the json object should be added to the output.
-    The JSON should include the following fields:
-    - test_name: A descriptive name for the test case
-    - request: An object containing 'method', 'path', 'headers', and 'body' (if applicable)
-    - expected_response: An object containing 'status_code' and 'body' (sample expected response)
-    Ensure that the 'headers' in the request include the appropriate Content-Type based on the 'consumes' field of the operation.
+    Generate API test cases for this operation in JSON format:
+    {operation_string}
+
+    Strictly adhere to the following format for each test case:
+    {{
+      "test_name": "Descriptive name for the test case",
+      "request": {{
+        "method": "HTTP method",
+        "path": "API endpoint path",
+        "headers": {{"header_name": "header_value"}},
+        "body": {{"key": "value"}}
+      }},
+      "expected_response": {{
+        "status_code": 200,
+        "body": {{"key": "expected value"}}
+      }}
+    }}
+
+    Generate an array of at least 3 test cases. Do not include any text outside the JSON array.
     """
 
     model = ChatOpenAI(model="gpt-4o-mini")
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are an API testing expert. Generate test cases in JSON format."),
+        ("system", "You are an API testing expert. Generate test cases in JSON format without any additional text."),
         MessagesPlaceholder("msgs")
     ])
 
     output_parser = JsonOutputParser()
     chain = prompt | model | output_parser
 
-    test_case = chain.invoke({"msgs": [HumanMessage(content=prompt_text)]})
-    return test_case
+    try:
+        test_cases = chain.invoke({"msgs": [HumanMessage(content=prompt_text)]})
+
+        # Ensure the output is a list of test cases
+        if not isinstance(test_cases, list):
+            test_cases = [test_cases]
+
+        # Validate and clean each test case
+        validated_test_cases = []
+        for case in test_cases:
+            if all(key in case for key in ['test_name', 'request', 'expected_response']):
+                validated_test_cases.append(case)
+
+        return validated_test_cases
+    except json.JSONDecodeError:
+        print("Error: Generated content is not valid JSON")
+        return []
 
 
 def run_test_case(base_url, test_case, operation):
