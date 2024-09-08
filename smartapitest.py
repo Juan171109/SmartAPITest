@@ -1,7 +1,6 @@
 import json
-import os
 import sys
-
+import socket
 import prance
 import requests
 from langchain_core.messages import HumanMessage
@@ -131,21 +130,26 @@ def main():
     operations = analyze_spec(openapi_spec)
 
     all_test_cases = []
+    operation_map = {}  # Map to store operation details for each test case
+
     for operation in operations:
-        print(f"Generating test case for: {operation['method']} {operation['path']}")
-        test_case = generate_test_case(operation)
-        all_test_cases.extend(test_case)
+        print(f"Generating test cases for: {operation['method']} {operation['path']}")
+        test_cases = generate_test_case(operation)
+        for test_case in test_cases:
+            all_test_cases.append(test_case)
+            operation_map[test_case['test_name']] = operation  # Store operation for each test case
 
     # Save all test cases to a JSON file
-    with open('test_cases.json', 'w') as f:
+    with open('results/test_cases.json', 'w') as f:
         json.dump(all_test_cases, f, indent=4)
 
-    print("Test cases saved to test_cases.json")
+    print(f"Generated {len(all_test_cases)} test cases. Saved to test_cases.json")
 
     # Run the test cases
     test_results = []
-    for test_case, operation in zip(all_test_cases, operations):
-        print("run test case " + test_case['test_name'])
+    for test_case in all_test_cases:
+        print(f"Running test case: {test_case['test_name']}")
+        operation = operation_map[test_case['test_name']]
         result = run_test_case(base_url, test_case, operation)
         test_results.append(result)
         if not result['passed']:
@@ -157,11 +161,10 @@ def main():
         print("---")
 
     # Save test results
-    with open('test_results.json', 'w') as f:
+    with open('results/test_results.json', 'w') as f:
         json.dump(test_results, f, indent=4)
 
-    print("Test results saved to test_results.json")
-
+    print(f"Test results saved to test_results.json. Total tests run: {len(test_results)}")
 
 if __name__ == "__main__":
     main()
