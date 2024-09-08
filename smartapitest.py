@@ -8,13 +8,6 @@ from langchain_core.messages import HumanMessage
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
-from dotenv import load_dotenv
-
-# Load the openai.env file
-load_dotenv(dotenv_path='openai.env')
-
-# Get the API key from environment variables
-api_key = os.getenv('OPENAI_API_KEY')
 
 
 def analyze_spec(spec):
