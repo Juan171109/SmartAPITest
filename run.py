@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     print("service all started.")
     time.sleep(600)
-    # time.sleep(int(time_limit) * 60 * 60)
+    time.sleep(int(time_limit) * 60 * 60)
 
     print("Stop running services...")
     subprocess.run("sudo docker stop `sudo docker ps -a -q`", shell=True)

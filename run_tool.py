@@ -12,8 +12,8 @@ def whitebox(port):
 
 
 def blackbox(swagger, port):
-    # timeout = time.time() + 60 * 60 * int(time_limit)
-    timeout = time.time() + 10 * 60 * int(time_limit)
+    timeout = time.time() + 60 * 60 * int(time_limit)
+    # timeout = time.time() + 10 * 60 * int(time_limit)
     while time.time() < timeout:
         if tool == "evomaster-blackbox":
             subprocess.run("rm -rf " + service, shell=True)
