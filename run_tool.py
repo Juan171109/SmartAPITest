@@ -12,7 +12,8 @@ def whitebox(port):
 
 
 def blackbox(swagger, port):
-    timeout = time.time() + 60 * 60 * int(time_limit)
+    # timeout = time.time() + 60 * 60 * int(time_limit)
+    timeout = time.time() + 10 * 60 * int(time_limit)
     while time.time() < timeout:
         if tool == "evomaster-blackbox":
             subprocess.run("rm -rf " + service, shell=True)
@@ -53,6 +54,7 @@ def blackbox(swagger, port):
                 print("Only run test for languagetool currently.")
             else:
                 print("Will skip test if service is not languagetool.")
+
 
 if __name__ == "__main__":
     tool = sys.argv[1]
