@@ -1,7 +1,8 @@
 pyyaml
 openapi-spec-validator
-rstr
+rstr~=3.2.2
 prance~=23.6.21.0
 requests~=2.32.3
 openai~=1.42.0
 langchain~=0.2.16
+numpy~=1.26.4
